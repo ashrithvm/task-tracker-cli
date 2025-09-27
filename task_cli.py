@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 
@@ -15,4 +16,24 @@ def get_tasks():
 def save_tasks(tasks):
     with open(TASK_FILE,'w') as f:
         json.dump(tasks,f,indent=4)
+
+def generate_id(tasks):
+    if not tasks:
+        return 1
+    return max(task['id'] for task in tasks)+1
+
+def add_task(description):
+    tasks=get_tasks()
+    new_id=generate_id(tasks)
+    timestamp = datetime.now().isoformat()
+    new_task={
+        'id': new_id,
+        'description': description,
+        'status': 'todo',
+        'createdAt': timestamp,
+        'updatedAt': timestamp
+    }
+    tasks.append(new_task)
+    save_tasks(tasks)
+    print(f"Task added successfully (ID: {new_id})")
 
